@@ -1,0 +1,63 @@
+---
+- name: Install Apache and upload site
+  hosts: all
+  become: true
+
+  vars:
+      source_file: ./index.html
+      destin_file: /var/www/html/index.html
+
+  tasks:
+      - block:  # REDHAT
+
+        - name: Install Apache for RedHat
+          yum:
+            name: httpd
+            state: latest
+
+        - name: Copy Homepage to server
+          copy:
+            src: "{{ source_file }}"
+            dest: "{{ destin_file }}"
+          notify: Restart Apache RedHat
+
+        - name: Start Web Server service for RedHat
+          service: 
+            name: httpd 
+            state: started 
+            enabled: true
+
+        when: ansible_os_family == "RedHat"
+
+      - block:  # DEBIAN
+
+        - name: Install Apache for Debian
+          yum:
+            name: apache2
+            state: latest
+
+        - name: Copy Homepage to server
+          copy:
+            src: "{{ source_file }}"
+            dest: "{{ destin_file }}"
+          notify: Restart Apache Debian
+
+
+        - name: Start Web Server service for Debian
+          service: 
+            name: apache2 
+            state: started 
+            enabled: true
+
+        when: ansible_os_family == "Debian"
+
+  handlers:
+      - name: Restart Apache RedHat
+        service: 
+            name: httpd
+            state: restarted
+
+      - name: Restart Apache Debian
+        service: 
+            name: apache2
+            state: restarted
