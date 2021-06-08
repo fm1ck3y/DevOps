@@ -1,9 +1,0 @@
-export FLASK_APP=run.py
-export FLASK_ENV=development
-export DBNAME=netcracker
-export USER_DB=m1ck3y
-export PASSWORD_DB=skype2234
-export HOST_DB=127.0.0.1
-export PORT_DB=5432
-
-flask run
